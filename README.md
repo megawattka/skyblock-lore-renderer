@@ -114,7 +114,7 @@ The renderer supports standard Minecraft `§` format codes:
 
 ---
 
-## 🖼️ Examples
+## 🖼️ More examples
 
 ### Plasmaflux Power Orb — Legendary Deployable
 <p align="center">
@@ -169,6 +169,7 @@ skyblock-lore-renderer/
 
 - [x] 🎨 Basic color format code support
 - [x] ✨ Bold text rendering (`§l`)
+- [ ] 🖼️ Enchantments tier 6 and 7 custom colors toggle
 - [ ] 🔄 Italic support (`§o`)
 - [ ] ➖ Strikethrough support (`§m`)
 - [ ] ➖ Underline support (`§n`)
