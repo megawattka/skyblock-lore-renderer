@@ -1,0 +1,16 @@
+§6Plasmaflux Power Orb
+§6Ability: Deploy  §e§lRIGHT CLICK
+§7Place an orb for §a1m §7buffing up to §b5
+§b§7players within §a20 §7blocks.
+§8Costs 50% of max mana.
+
+§6Orb Buff: Plasmaflux
+§6• §7Grants §b+125% §7base mana regen.
+§6• §7Heals §c3% §7of max §c❤§7 per second.
+§6• §7Grants §4+7.5♨ Vitality §7and §a+7.5☄ Mending§7.
+§6• §7Grants §c+35❁ Strength§7.
+
+§8Only one deployable buff applies.
+
+§8§l* §8Co-op Soulbound §8§l*
+§6§lLEGENDARY DEPLOYABLE

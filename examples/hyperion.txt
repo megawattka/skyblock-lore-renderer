@@ -1,0 +1,35 @@
+§dHeroic Hyperion §6✪✪✪✪✪
+§7Gear Score: §d1206 §8(4011)
+§7Damage: §c+352 §e(+30) §8(+1,372.46)
+§7Strength: §c+245 §e(+30) §9(+50) §8(+968.3)
+§7Crit Damage: §9+70% §8(+294.7%)
+§7Attack Speed: §e+7% §9(+7%) §8(+10.78%)
+§7Ferocity: §c+33 §8(+46.2)
+§7Intelligence: §b+582 §9(+125) §8(+2,302.87)
+§7Gemstones: §8[§8✎§8] §8[§8⚔§8]
+
+§d§l§d§lUltimate Wise V, §9Bane of Arthropods VI, §9Champion X
+§9Cleave V, §9Critical VI, §9Cubism V
+§9Ender Slayer VI, §9Experience IV, §9Fire Aspect II
+§9First Strike IV, §9Giant Killer VI, §9Gravity V
+§9Impaling V, §9Knockback II, §9Lethality VI
+§9Looting IV, §9Luck VI, §9Mana Steal III
+§9Prosecute V, §9Scavenger V, §9Sharpness VI
+§9Smite V, §9Thunderlord VI, §9Vampirism VI
+§9Venomous VI
+
+§7Deals §c+50% §7damage to §8☠ Wither §7mobs.
+§7Grants §c+1 §c❁ Damage §7and §a+2 §b✎
+§bIntelligence §7per §cCatacombs §7level.
+
+§aScroll Abilities:
+§6Ability: Wither Impact  §e§lRIGHT CLICK
+§7Teleport §a10 blocks§7 ahead of you
+§7dealing §c144,841 §7damage to nearby
+§7enemies. Also reduces your damage
+§7taken and grants an absorption
+§7shield for §e5 seconds§7.
+§8Mana Cost: §3135
+
+§8§l* §8Co-op Soulbound §8§l*
+§d§l§ka§r §d§lMYTHIC DUNGEON SWORD §d§l§ka
