@@ -4,7 +4,7 @@
 
 ### 🎨 Turn Minecraft Hypixel Skyblock item lore into beautiful images
 
-[![Rust](https://img.shields.io/badge/Rust-1.70+-orange?logo=rust)](https://www.rust-lang.org)
+[![Rust](https://img.shields.io/badge/Rust-1.85+-orange?logo=rust)](https://www.rust-lang.org)
 [![License](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
 
 <p align="center">
@@ -20,7 +20,7 @@
 | Feature | Description |
 |---------|-------------|
 | 🎨 **Full Color Support** | Renders all Minecraft § format codes with accurate colors |
-| ✨ **Bold Text** | Supports `§l` bold formatting with proper offset rendering |
+| ✨ **t6 and t7 support** | Supports gold color for t6 and purple color for t7 |
 | 🔤 **Faithful Font** | Uses the iconic Minecraft Faithful Unicode font for authentic look |
 | 📏 **Auto-sizing** | Automatically calculates image dimensions based on text content |
 | ⚡ **Fast & Lightweight** | Pure Rust with minimal dependencies — blazing fast rendering |
@@ -30,7 +30,7 @@
 ## 🚀 Quick Start
 
 ### Prerequisites
-- [Rust](https://rustup.rs/) 1.70 or later
+- [Rust](https://rustup.rs/) 1.85 or later
 
 ### Installation
 
@@ -42,6 +42,7 @@ cd skyblock-lore-renderer
 # Build in release mode
 cargo build --release
 
+# Now it should appear in ./target/release/skyblock-lore-renderer
 ```
 
 ---
@@ -55,8 +56,8 @@ skyblock-lore-renderer <input.txt> <output.png>
 ### Example
 
 ```bash
-# Render a Hyperion sword lore
-./skyblock-lore-renderer examples/hyperion.txt my_hyperion.png
+# Render a Hyperion
+./skyblock-lore-renderer examples/hyperion.txt hyperion.png
 
 # Render a Plasmaflux Power Orb
 ./skyblock-lore-renderer examples/plasmaflux.png my_orb.png
@@ -123,24 +124,6 @@ The renderer supports standard Minecraft `§` format codes:
 
 ---
 
-## 🏗️ Architecture
-
-```
-skyblock-lore-renderer/
-├── 📁 src/
-│   ├── 📄 main.rs      # CLI entry point, image generation
-│   └── 📄 lore.rs      # Lore parsing, text rendering, format code handling
-├── 📁 examples/
-│   ├── 📄 hyperion.txt     # Example: Mythic Hyperion lore
-│   ├── 📄 hyperion.png     # Rendered output
-│   ├── 📄 plasmaflux.txt   # Example: Legendary Plasmaflux
-│   └── 📄 plasmaflux.png   # Rendered output
-├── 📁 fonts/
-│   └── 🔤 faithful-unicode.ttf   # Minecraft Faithful font
-├── 📄 Cargo.toml
-└── 📄 .env
-```
-
 ### How It Works
 
 1. 📖 **Parse** — Regex extracts `§` format codes and text segments
@@ -169,26 +152,31 @@ skyblock-lore-renderer/
 
 - [x] 🎨 Basic color format code support
 - [x] ✨ Bold text rendering (`§l`)
-- [ ] 🖼️ Enchantments tier 6 and 7 custom colors toggle
+- [x] 🖼️ Enchantments tier 6 and 7 custom colors toggle
 - [ ] 🔄 Italic support (`§o`)
 - [ ] ➖ Strikethrough support (`§m`)
 - [ ] ➖ Underline support (`§n`)
-- [ ] 🖼️ Custom background support
+- [?] 🖼️ Custom background support
 
 ---
 
 ## 📜 License
 
 This project is licensed under the **MIT License**.
+Feel free to modify this api as you want
 
 ---
 
-<div align="center">
+<p align="center">
+  <samp>
+    Made with <b>❤️</b> by <a href="https://github.com/megawattka">@megawattka</a>
+  </samp>
+</p>
 
-### Made with ⚡ by [megawattka](https://github.com/megawattka)
+<p align="center">
+  <sub><samp>independent · not affiliated with Hypixel or Mojang Studios</samp></sub>
+</p>
 
-*Not affiliated with Hypixel or Mojang Studios*
-
-⭐ Star this repo if you find it useful!
-
-</div>
+<p align="center">
+  <a href="https://github.com/megawattka/skyblock-lore-renderer">⭐ star this repo</a> if you found it useful
+</p>
