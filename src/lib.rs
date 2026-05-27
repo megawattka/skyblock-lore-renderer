@@ -3,3 +3,5 @@ pub mod enchantments;
 pub mod font;
 pub mod parser;
 pub mod renderer;
+pub mod utils;
+pub mod errors;

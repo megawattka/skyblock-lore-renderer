@@ -2,7 +2,10 @@ use image::Rgb;
 use regex::Regex;
 
 use crate::config::{
-    COLOR_BLUE, COLOR_GOLD, ENCHANTMENT_COLORS, LOWER_TIER_ENCHANTMENTS,
+    COLOR_BLUE,
+    COLOR_GOLD,
+    ENCHANTMENT_COLORS,
+    LOWER_TIER_ENCHANTMENTS,
 };
 use crate::parser::parse_roman_numeral;
 
@@ -11,6 +14,10 @@ pub fn get_enchantment_color(text: &str, regex: &Regex) -> Option<Rgb<u8>> {
     let captures = regex.captures(text)?;
     let enchantment = captures.get(1)?.as_str();
     let tier = parse_roman_numeral(captures.get(2)?.as_str())?;
+
+    if enchantment == "Mana Steal" && tier == 3 {
+        return Some(COLOR_GOLD)
+    }
 
     let lowest_tier = if LOWER_TIER_ENCHANTMENTS.contains(&enchantment) {
         3

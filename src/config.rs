@@ -13,7 +13,7 @@ pub const PADDING_Y: i32 = 16;
 pub const BOTTOM_MARGIN: u32 = 32;
 
 /// Enchantments that use lower tier thresholds for coloring
-pub const LOWER_TIER_ENCHANTMENTS: &[&str] = &[
+pub static LOWER_TIER_ENCHANTMENTS: &[&str] = &[
     "Experience",
     "Life Steal",
     "Scavenger",
