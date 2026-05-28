@@ -5,6 +5,7 @@
 ### 🎨 Turn Minecraft Hypixel Skyblock item lore into beautiful images
 
 [![Rust](https://img.shields.io/badge/Rust-1.85+-orange?logo=rust)](https://www.rust-lang.org)
+[![Docker](https://img.shields.io/badge/Docker-Ready-2496ED?logo=docker)](https://www.docker.com)
 [![License](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
 
 <p align="center">
@@ -19,20 +20,31 @@
 
 | Feature | Description |
 |---------|-------------|
-| 🎨 **Full Color Support** | Renders all Minecraft § format codes with accurate colors |
-| ✨ **t6 and t7 support** | Supports gold color for t6 and purple color for t7 |
+| 🎨 **Full Color Support** | Renders all Minecraft `§` format codes with accurate colors |
+| ✨ **Tier 6 & 7 Support** | Gold color for t6 and purple color for t7 enchantments |
 | 🔤 **Faithful Font** | Uses the iconic Minecraft Faithful Unicode font for authentic look |
 | 📏 **Auto-sizing** | Automatically calculates image dimensions based on text content |
+| 🐳 **Docker Ready** | Run in a container without installing Rust locally |
 | ⚡ **Fast & Lightweight** | Pure Rust with minimal dependencies — blazing fast rendering |
 
 ---
 
 ## 🚀 Quick Start
 
-### Prerequisites
-- [Rust](https://rustup.rs/) 1.85 or later
+### 🐳 Via Docker (Recommended)
 
-### Installation
+If you have Docker installed, you can run the renderer without installing Rust or compiling anything:
+
+```bash
+# 1. Clone the repository
+git clone https://github.com/megawattka/skyblock-lore-renderer.git
+cd skyblock-lore-renderer
+
+# 2. Run application via docker compose
+docker compose up --build -d
+```
+
+#### 🔧 Local Build
 
 ```bash
 # Clone the repository
@@ -42,25 +54,41 @@ cd skyblock-lore-renderer
 # Build in release mode
 cargo build --release
 
-# Now it should appear in ./target/release/skyblock-lore-renderer
+# Binary will be available at ./target/release/skyblock-lore-renderer
 ```
 
 ---
 
 ## 📖 Usage
 
-```bash
-skyblock-lore-renderer <input.txt> <output.png>
-```
+```python
+import json
+import urllib.request as ur
 
-### Example
+url = "http://127.0.0.1:8080/render"
+with open("./examples/plasmaflux.txt") as fp:
+    lore = fp.read()
 
-```bash
-# Render a Hyperion
-./skyblock-lore-renderer examples/hyperion.txt hyperion.png
+payload = json.dumps({
+    "lore": lore,
+    "options": {
+        "background": "#000000"
+    }
+}).encode()
 
-# Render a Plasmaflux Power Orb
-./skyblock-lore-renderer examples/plasmaflux.png my_orb.png
+headers = {"content-type": "application/json"} 
+request = ur.Request(url, data=payload, headers=headers)
+
+rendered = ur.urlopen(request).read()
+r_json = json.loads(rendered)
+
+print(r_json)
+# {
+#     'image': 'iVBORw0KGgoAAAANSUhEUgAAAj...',
+#     'width': 574,
+#     'height': 544,
+#     'render_time_ms': 2,
+# }
 ```
 
 ---
@@ -115,7 +143,7 @@ The renderer supports standard Minecraft `§` format codes:
 
 ---
 
-## 🖼️ More examples
+## 🖼️ More Examples
 
 ### Plasmaflux Power Orb — Legendary Deployable
 <p align="center">
@@ -124,13 +152,13 @@ The renderer supports standard Minecraft `§` format codes:
 
 ---
 
-### How It Works
+## ⚙️ How It Works
 
 1. 📖 **Parse** — Regex extracts `§` format codes and text segments
 2. 🎨 **Colorize** — Maps format codes to RGB colors via `phf` static map
 3. 📐 **Measure** — Calculates text width using `ab_glyph` for proper image sizing
 4. ✍️ **Render** — Draws text onto an `RgbImage` with `imageproc`
-5. 💾 **Save** — Exports the final image as PNG
+5. 💾 **Get the result** — Exports the final image as PNG
 
 ---
 
@@ -145,6 +173,7 @@ The renderer supports standard Minecraft `§` format codes:
 | 🌿 `dotenvy` | Environment configuration |
 | 📋 `anyhow` | Ergonomic error handling |
 | 🪵 `log` + `env_logger` | Structured logging |
+| ⚡ `warp` | WebServer Logic |
 
 ---
 
@@ -156,14 +185,14 @@ The renderer supports standard Minecraft `§` format codes:
 - [ ] 🔄 Italic support (`§o`)
 - [ ] ➖ Strikethrough support (`§m`)
 - [ ] ➖ Underline support (`§n`)
-- [?] 🖼️ Custom background support
+- [x] 🖼️ Custom background support
 
 ---
 
 ## 📜 License
 
-This project is licensed under the **MIT License**.
-Feel free to modify this api as you want
+This project is licensed under the **MIT License**.  
+Feel free to modify this API as you want.
 
 ---
 
