@@ -2,9 +2,11 @@ use std::io::Cursor;
 
 use base64::{Engine as _, engine::general_purpose::STANDARD};
 use bytes::Bytes;
-use image::ImageFormat;
-use warp::reject::{self, Rejection};
-use warp::http::{Response, StatusCode};
+use image::{ImageFormat, Rgb};
+use warp::{
+    http::{Response, StatusCode},
+    reject::{self, Rejection}
+};
 
 use crate::errors::BadRequest;
 
@@ -32,4 +34,14 @@ pub fn build_image_response(content: Vec<u8>, elapsed: String) -> Response<Vec<u
         .header("content-type", "image/png")
         .body(content)
         .expect("Failed to create response")
+}
+pub fn hex_to_rgb(hex: &str) -> Option<Rgb<u8>> {
+    let hex = hex.strip_prefix('#').unwrap_or(hex);
+    let packed = u32::from_str_radix(hex, 16).ok()?;
+    
+    Some(Rgb([
+        ((packed >> 16) & 0xFF) as u8,
+        ((packed >> 8) & 0xFF) as u8,
+        (packed & 0xFF) as u8,
+    ]))
 }

@@ -1,29 +1,49 @@
+use std::sync::Arc;
+
 use ab_glyph::FontRef;
 use image::{ImageBuffer, Rgb, RgbImage};
 use imageproc::drawing::draw_text_mut;
-
-use crate::config::{
-    BACKGROUND_COLOR,
-    BOTTOM_MARGIN,
-    COLOR_FORMATS,
-    DEFAULT_COLOR,
-    LINE_HEIGHT,
-    PADDING_X,
-    PADDING_Y,
-};
-use crate::enchantments::{get_enchantment_color, should_use_enchantment_color};
-use crate::font::{calculate_text_width, default_scale};
-use crate::parser::TextSegment;
 use regex::Regex;
+
+use crate::{
+    config::{
+        BACKGROUND_COLOR,
+        BOTTOM_MARGIN,
+        COLOR_FORMATS,
+        DEFAULT_COLOR,
+        LINE_HEIGHT,
+        PADDING_X,
+        PADDING_Y,
+    }, 
+    enchantments::{
+        get_enchantment_color,
+        should_use_enchantment_color
+    }, 
+    font::{calculate_text_width, default_scale},
+    models::RenderOptions,
+    parser::TextSegment,
+    state::AppState,
+    utils::hex_to_rgb
+};
 
 /// Render parsed lore lines into an RGB image
 pub fn render_lore(
     segments: &[Vec<TextSegment>],
-    font: &FontRef,
-    enchant_regex: &Regex,
+    state: Arc<AppState>,
+    options: &RenderOptions,
 ) -> RgbImage {
+    let font = &state.font;
     let (width, height) = calculate_dimensions(segments, font);
-    let mut img = ImageBuffer::from_pixel(width, height, BACKGROUND_COLOR);
+    
+    let default_bg = "#000000".to_string();
+    let hexed = options.background
+        .as_ref()
+        .unwrap_or(&default_bg);
+
+    let background = hex_to_rgb(hexed)
+        .unwrap_or(BACKGROUND_COLOR);
+
+    let mut img = ImageBuffer::from_pixel(width, height, background);
 
     let scale = default_scale();
     let mut y = PADDING_Y;
@@ -31,7 +51,7 @@ pub fn render_lore(
     for line in segments {
         let mut x = PADDING_X;
         for segment in line {
-            let color = resolve_color(segment, enchant_regex);
+            let color = resolve_color(segment, &state.enchant_regex);
             let is_bold = segment.format_codes.contains(&"§l".to_string());
 
             draw_text_segment(&mut img, color, x, y, scale, font, &segment.text, is_bold);

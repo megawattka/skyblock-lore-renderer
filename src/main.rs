@@ -1,61 +1,58 @@
-use std::{convert::Infallible, sync::Arc, time::Instant};
+use std::{
+    convert::Infallible,
+    sync::Arc,
+    time::Instant
+};
 
-use ab_glyph::FontRef;
-use bytes::Bytes;
+use base64::{Engine, engine::general_purpose::STANDARD};
 use dotenvy::dotenv;
-use log::info;
-use regex::Regex;
-use skyblock_lore_renderer::utils::build_image_response;
-use warp::{reject, reply};
+use log::{info, warn};
 use warp::{
     Filter, Rejection, Reply,
     http::StatusCode,
+    reject,
+    reply::{self, Json, json}
 };
 use serde_json::json as s_json;
 
 use skyblock_lore_renderer::{
     errors::BadRequest,
-    font::load_font,
+    models::{
+        RenderOptions,
+        RenderRequest,
+        RenderResponse
+    },
     parser::parse_lore_lines,
     renderer::render_lore,
-    utils::{
-        bytes_to_string,
-        decode_base64,
-        to_png_bytes,
-    },
+    state::{AppState, build_state},
+    utils::to_png_bytes
 };
-
-// ========== Состояние ==========
-
-#[derive(Debug, Clone)]
-struct AppState {
-    font: FontRef<'static>,
-    enchant_regex: Regex,
-}
-
-fn build_state() -> anyhow::Result<Arc<AppState>> {
-    let font = load_font()?;
-    info!("Faithful font loaded successfully");
-
-    let enchant_regex = Regex::new(r"^([A-Za-z ]+) ([IVX]+)")?;
-    Ok(Arc::new(AppState { font, enchant_regex }))
-}
 
 // ========== Handlers ==========
 
-async fn handle_create(state: Arc<AppState>, body: Bytes) -> Result<impl Reply, Rejection> {
-    let decoded = decode_base64(&body)?;
-    let input = bytes_to_string(decoded)?;
-
+async fn handle_create(state: Arc<AppState>, request: RenderRequest) -> Result<Json, Rejection> {
     let start = Instant::now();
-    let lines: Vec<&str> = input.lines().collect();
+
+    let lore = request.lore;
+    let lines: Vec<&str> = lore.lines().collect();
+    info!("Rendering: {:?}", lines.first().unwrap_or(&""));
 
     let parsed = parse_lore_lines(&lines);
-    let image = render_lore(&parsed, &state.font, &state.enchant_regex);
+    let options = request.options.unwrap_or(RenderOptions::default());
+
+    let image = render_lore(&parsed, state, &options);
     let content = to_png_bytes(&image);
 
     let elapsed = format!("{:.2?}", start.elapsed());
-    Ok(build_image_response(content, elapsed))
+    info!("Rendered image in {}", elapsed);
+
+    let response = RenderResponse {
+        image: STANDARD.encode(&content),
+        width: image.width() as u32,
+        height: image.height() as u32,
+        render_time_ms: start.elapsed().as_millis()
+    };
+    Ok(json(&response))
 }
 
 // ========== Error handler ==========
@@ -68,7 +65,7 @@ async fn handle_rejection(err: Rejection) -> Result<impl Reply, std::convert::In
     } else if err.find::<reject::MethodNotAllowed>().is_some() {
         (StatusCode::METHOD_NOT_ALLOWED, "Method Not Allowed")
     } else {
-        eprintln!("unhandled rejection: {:?}", err);
+        warn!("unhandled rejection: {:?}", err);
         (StatusCode::INTERNAL_SERVER_ERROR, "Internal Server Error")
     };
 
@@ -86,11 +83,12 @@ fn with_state(state: Arc<AppState>) -> impl Filter<Extract = (Arc<AppState>,), E
     warp::any().map(move || state.clone())
 }
 
-fn routes(state: Arc<AppState>) -> impl Filter<Extract = impl Reply, Error = Infallible> + Clone {
-    warp::path!("create")
+fn make_routes(state: Arc<AppState>) -> impl Filter<Extract = impl Reply, Error = Infallible> + Clone {
+    warp::path!("render")
         .and(warp::post())
         .and(with_state(state))
-        .and(warp::body::bytes())
+        .and(warp::body::content_length_limit(1024 * 10)) // 10KB max
+        .and(warp::body::json::<RenderRequest>())
         .and_then(handle_create)
         .recover(handle_rejection)
 }
@@ -104,8 +102,11 @@ async fn main() -> anyhow::Result<()> {
     println!("Skyblock Lore Renderer - Starting up...");
 
     let state = build_state()?;
-    warp::serve(routes(state))
-        .run(([127, 0, 0, 1], 8080))
+    let routes = make_routes(state);
+    info!("routes configured");
+
+    warp::serve(routes)
+        .run(([0, 0, 0, 0], 8080))
         .await;
 
     Ok(())

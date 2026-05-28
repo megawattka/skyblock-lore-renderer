@@ -1,13 +1,15 @@
 use image::Rgb;
 use regex::Regex;
 
-use crate::config::{
-    COLOR_BLUE,
-    COLOR_GOLD,
-    ENCHANTMENT_COLORS,
-    LOWER_TIER_ENCHANTMENTS,
+use crate::{
+    config::{
+        COLOR_BLUE,
+        COLOR_GOLD,
+        ENCHANTMENT_COLORS,
+        LOWER_TIER_ENCHANTMENTS,
+    },
+    parser::parse_roman_numeral
 };
-use crate::parser::parse_roman_numeral;
 
 /// Determines the color for an enchantment based on its tier
 pub fn get_enchantment_color(text: &str, regex: &Regex) -> Option<Rgb<u8>> {
