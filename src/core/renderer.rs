@@ -9,38 +9,34 @@ use crate::{
     config::{
         BACKGROUND_COLOR,
         BOTTOM_MARGIN,
-        COLOR_FORMATS,
         DEFAULT_COLOR,
         LINE_HEIGHT,
         PADDING_X,
         PADDING_Y,
     }, 
-    enchantments::{
-        get_enchantment_color,
-        should_use_enchantment_color
+    core::{
+        enchantments::{
+            get_enchantment_color,
+            should_use_enchantment_color
+        },
+        parser::TextSegment
     }, 
     font::{calculate_text_width, default_scale},
     models::RenderOptions,
-    parser::TextSegment,
     state::AppState,
-    utils::hex_to_rgb
+    utils::{color_from_code, hex_to_rgb}
 };
 
 /// Render parsed lore lines into an RGB image
 pub fn render_lore(
     segments: &[Vec<TextSegment>],
-    state: Arc<AppState>,
+    state: &Arc<AppState>,
     options: &RenderOptions,
 ) -> RgbImage {
     let font = &state.font;
     let (width, height) = calculate_dimensions(segments, font);
     
-    let default_bg = "#000000".to_string();
-    let hexed = options.background
-        .as_ref()
-        .unwrap_or(&default_bg);
-
-    let background = hex_to_rgb(hexed)
+    let background = hex_to_rgb(&options.background)
         .unwrap_or(BACKGROUND_COLOR);
 
     let mut img = ImageBuffer::from_pixel(width, height, background);
@@ -51,8 +47,8 @@ pub fn render_lore(
     for line in segments {
         let mut x = PADDING_X;
         for segment in line {
-            let color = resolve_color(segment, &state.enchant_regex);
-            let is_bold = segment.format_codes.contains(&"§l".to_string());
+            let color = resolve_color(segment, &state.enchant_regex, &options);
+            let is_bold = segment.format_codes.contains(&'l');
 
             draw_text_segment(&mut img, color, x, y, scale, font, &segment.text, is_bold);
 
@@ -81,19 +77,18 @@ fn calculate_dimensions(segments: &[Vec<TextSegment>], font: &FontRef) -> (u32, 
 }
 
 /// Resolve the color for a text segment
-fn resolve_color(segment: &TextSegment, enchant_regex: &Regex) -> Rgb<u8> {
-    if enchant_regex.is_match(&segment.text) && should_use_enchantment_color(&segment.format_codes)
-    {
+fn resolve_color(segment: &TextSegment, enchant_regex: &Regex, options: &RenderOptions) -> Rgb<u8> {
+    let is_match = enchant_regex.is_match(&segment.text);
+    if is_match && should_use_enchantment_color(&segment.format_codes, &options) {
         if let Some(color) = get_enchantment_color(&segment.text, enchant_regex) {
             return color;
         }
     }
-
     segment
         .format_codes
         .iter()
         .fold(DEFAULT_COLOR, |acc, code| {
-            COLOR_FORMATS.get(code.as_str()).copied().unwrap_or(acc)
+            color_from_code(code).unwrap_or(acc)
         })
 }
 

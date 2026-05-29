@@ -87,7 +87,7 @@ print(r_json)
 #     'image': 'iVBORw0KGgoAAAANSUhEUgAAAj...',
 #     'width': 574,
 #     'height': 544,
-#     'render_time_ms': 2,
+#     'render_time_ms': 2.18,
 # }
 ```
 

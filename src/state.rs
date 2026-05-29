@@ -10,6 +10,7 @@ use crate::font::load_font;
 pub struct AppState {
     pub font: FontRef<'static>,
     pub enchant_regex: Regex,
+    pub line_regex: Regex
 }
 
 pub fn build_state() -> anyhow::Result<Arc<AppState>> {
@@ -17,5 +18,6 @@ pub fn build_state() -> anyhow::Result<Arc<AppState>> {
     info!("Faithful font loaded successfully");
 
     let enchant_regex = Regex::new(r"^([A-Za-z ]+) ([IVX]+)")?;
-    Ok(Arc::new(AppState { font, enchant_regex }))
+    let line_regex = Regex::new(r"((?:§[0-9a-fklmnor])+)([^§]*)")?;
+    Ok(Arc::new(AppState { font, enchant_regex, line_regex }))
 }

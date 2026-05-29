@@ -1,14 +1,20 @@
-use serde_derive::{Deserialize, Serialize};
+use serde::{Deserialize, Serialize};
 
 #[derive(Debug, Serialize, Deserialize)]
 pub struct RenderOptions {
     #[serde(default = "default_bg")]
-    pub background: Option<String>,
+    pub background: String,
+
+    #[serde(default = "default_recolor")]
+    pub recolor_enchantments: bool
 }
 
 impl Default for RenderOptions {
     fn default() -> Self {
-        Self { background: default_bg() }
+        Self {
+            background: default_bg(),
+            recolor_enchantments: default_recolor()
+        }
     }
 }
 
@@ -20,12 +26,13 @@ pub struct RenderRequest {
     pub options: Option<RenderOptions>,
 }
 
-fn default_bg() -> Option<String> { Some("#000000".into()) }
+fn default_bg() -> String { "#000000".into() }
+fn default_recolor() -> bool { true }
 
 #[derive(Debug, Serialize, Deserialize)]
 pub struct RenderResponse {
     pub image: String,
     pub width: u32,
     pub height: u32,
-    pub render_time_ms: u128,
+    pub render_time_ms: f32,
 }

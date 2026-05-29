@@ -3,14 +3,12 @@ use regex::Regex;
 /// A segment of text with its associated Minecraft format codes
 #[derive(Debug, Clone)]
 pub struct TextSegment {
-    pub format_codes: Vec<String>,
+    pub format_codes: Vec<char>,
     pub text: String,
 }
 
 /// Parse lore lines into segments with format codes
-pub fn parse_lore_lines(lines: &[&str]) -> Vec<Vec<TextSegment>> {
-    let pattern = Regex::new(r"((?:§[0-9a-fklmnor])+)([^§]*)").unwrap();
-
+pub fn parse_lore_lines(lines: &[&str], pattern: &Regex) -> Vec<Vec<TextSegment>> {
     lines
         .iter()
         .map(|line| {
@@ -26,13 +24,8 @@ pub fn parse_lore_lines(lines: &[&str]) -> Vec<Vec<TextSegment>> {
 }
 
 /// Split a string of format codes like "§a§l" into vec!["§a", "§l"]
-pub fn split_format_codes(input: &str) -> Vec<String> {
-    input
-        .chars()
-        .collect::<Vec<_>>()
-        .chunks_exact(2)
-        .map(|chunk| chunk.iter().collect())
-        .collect()
+pub fn split_format_codes(input: &str) -> Vec<char> {
+    input.chars().skip(1).step_by(2).collect()
 }
 
 /// Parse a Roman numeral (I, V, X only) into an integer
