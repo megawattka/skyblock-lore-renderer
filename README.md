@@ -66,13 +66,14 @@ import json
 import urllib.request as ur
 
 url = "http://127.0.0.1:8080/render"
-with open("./examples/plasmaflux.txt") as fp:
+with open("./examples/hyperion.txt") as fp:
     lore = fp.read()
 
 payload = json.dumps({
     "lore": lore,
     "options": {
-        "background": "#000000"
+        "background": "#000000",
+        "recolor_enchantments": True
     }
 }).encode()
 
@@ -168,7 +169,6 @@ The renderer supports standard Minecraft `§` format codes:
 |-------|---------|
 | 🖼️ `image` + `imageproc` | Image creation and text drawing |
 | 🔤 `ab_glyph` | Font loading and glyph metrics |
-| ⚡ `phf` | Compile-time perfect hash maps for color codes |
 | 📝 `regex` | Lore format code parsing |
 | 🌿 `dotenvy` | Environment configuration |
 | 📋 `anyhow` | Ergonomic error handling |

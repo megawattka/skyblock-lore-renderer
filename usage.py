@@ -9,7 +9,7 @@ payload = json.dumps({
     "lore": lore,
     "options": {
         "background": "#000000",
-        "recolor_enchantments": True,
+        "recolor_enchantments": True
     }
 }).encode()
 
@@ -20,5 +20,9 @@ rendered = ur.urlopen(request).read()
 r_json = json.loads(rendered)
 
 print(r_json)
-with open("output.png", "wb") as fp:
-    fp.write(__import__("base64").b64decode(r_json["image"].encode()))
+# {
+#     'image': 'iVBORw0KGgoAAAANSUhEUgAAAj...',
+#     'width': 574,
+#     'height': 544,
+#     'render_time_ms': 2.18,
+# }
